@@ -4,8 +4,7 @@ import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.repository.PostRepository;
-
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostService {
@@ -27,23 +26,57 @@ public class PostService {
 
     // READ - 전체 📝 과제
     public List<PostResponse> getAllPosts() {
-        // TODO
-        return null;
+        List<Post> posts = postRepository.findAll();
+        if(posts.isEmpty()){
+            System.out.println("등록된 게시글이 없습니다.");
+            return new ArrayList<>();
+        }
+
+        List<PostResponse> result = new ArrayList<>();
+        for(Post post: posts){
+            result.add(new PostResponse(post));
+        }
+        return result;
     }
 
     // READ - 단건 📝 과제
     public PostResponse getPost(Long id) {
-        // TODO
-        return null;
+        Post post = postRepository.findById(id);
+
+        if(post==null){
+            throw new IllegalArgumentException("해당하는 게시글이 존재하지 않습니다.");
+        }
+
+        return new PostResponse(post);
     }
 
     // UPDATE 📝 과제
     public void updatePost(Long id, String newTitle, String newContent) {
-        // TODO
+        Post post = postRepository.findById(id);
+
+        if(post==null) {
+            throw new IllegalArgumentException("해당하는 게시글이 존재하지 않습니다.");
+        }
+
+        if(newTitle==null || newTitle.isBlank()) {
+            throw new IllegalArgumentException("제목은 필수입니다.");
+        }
+
+        if(newContent==null || newContent.isBlank()) {
+            throw new IllegalArgumentException("내용은 필수입니다.");
+        }
+
+        post.update(newTitle, newContent);
     }
 
     // DELETE 📝 과제
     public void deletePost(Long id) {
-        // TODO
+        Post post = postRepository.findById(id);
+
+        if(post==null){
+            throw new IllegalArgumentException("해당하는 게시글이 존재하지 않습니다.");
+        }
+
+        postRepository.deleteById(id);
     }
 }
