@@ -26,10 +26,6 @@ public class PostService {
     // READ - 전체 📝 과제
     public List<PostResponse> getAllPosts() {
         List<Post> posts = postRepository.findAll();
-        if(posts.isEmpty()){
-            System.out.println("등록된 게시글이 없습니다.");
-            return new ArrayList<>();
-        }
 
         List<PostResponse> result = new ArrayList<>();
         for(Post post: posts){
