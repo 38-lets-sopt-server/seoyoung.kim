@@ -1,6 +1,7 @@
 package org.sopt.controller;
 
 import org.sopt.dto.request.CreatePostRequest;
+import org.sopt.dto.response.ApiResponse;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.exception.PostNotFoundException;
@@ -12,44 +13,50 @@ public class PostController {
     private final PostService postService = new PostService();
 
     // POST /posts
-    public CreatePostResponse createPost(CreatePostRequest request) {
+    public ApiResponse<CreatePostResponse> createPost(CreatePostRequest request) {
         try {
-            return postService.createPost(request);
+            CreatePostResponse data = postService.createPost(request);
+            return ApiResponse.success(data, "게시글 등록 완료");
         } catch (IllegalArgumentException e) {
-            return new CreatePostResponse(null, "🚫 " + e.getMessage());
+            return ApiResponse.error(e.getMessage());
         }
     }
 
     // GET /posts 📝 과제
-    public List<PostResponse> getAllPosts() {
-        return postService.getAllPosts();
+    public ApiResponse<List<PostResponse>> getAllPosts() {
+        List<PostResponse> data = postService.getAllPosts();
+        return ApiResponse.success(data, "게시글 목록 조회 성공");
     }
 
     // GET /posts/{id} 📝 과제
-    public PostResponse getPost(Long id) {
-       try {
-           return postService.getPost(id);
-       } catch (PostNotFoundException e){
-           System.out.println("🚫 " + e.getMessage());
-           return null;
+    public ApiResponse<PostResponse> getPost(Long id) {
+        try {
+            PostResponse data = postService.getPost(id);
+            return ApiResponse.success(data, "게시글 조회 성공");
+        } catch (PostNotFoundException e) {
+            return ApiResponse.error(e.getMessage());
         }
     }
 
     // PUT /posts/{id} 📝 과제
-    public void updatePost(Long id, String newTitle, String newContent) {
+    public ApiResponse<Void> updatePost(Long id, String newTitle, String newContent) {
         try {
             postService.updatePost(id, newTitle, newContent);
-        } catch (PostNotFoundException e){
-            System.out.println("🚫 " + e.getMessage());
+            return ApiResponse.success(null, "게시글 수정 완료");
+        } catch (PostNotFoundException | IllegalArgumentException e) {
+            return ApiResponse.error(e.getMessage());
         }
     }
 
+
     // DELETE /posts/{id} 📝 과제
-    public void deletePost(Long id) {
+    public ApiResponse<Void> deletePost(Long id) {
         try {
             postService.deletePost(id);
-        } catch (PostNotFoundException e){
-            System.out.println("🚫 " + e.getMessage());
+            return ApiResponse.success(null, "게시글 삭제 완료");
+        } catch (PostNotFoundException e) {
+            return ApiResponse.error(e.getMessage());
         }
     }
 }
+
