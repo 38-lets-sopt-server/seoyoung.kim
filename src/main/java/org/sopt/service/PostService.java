@@ -16,7 +16,6 @@ public class PostService {
     // CREATE
     public CreatePostResponse createPost(CreatePostRequest request) {
         PostValidator.validateTitle(request.title);
-        PostValidator.validateContent(request.content);
         String createdAt = java.time.LocalDateTime.now().toString();
         Post post = new Post(postRepository.generateId(), request.title, request.content, request.author, createdAt);
         postRepository.save(post);
@@ -54,7 +53,6 @@ public class PostService {
         }
 
         PostValidator.validateTitle(newTitle);
-        PostValidator.validateContent(newContent);
 
         post.update(newTitle, newContent);
     }
