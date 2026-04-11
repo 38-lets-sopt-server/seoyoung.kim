@@ -1,12 +1,17 @@
 package org.sopt;
+import org.sopt.controller.PostController;
 import org.sopt.dto.request.CreatePostRequest;
-import org.sopt.service.PostService;
+import org.sopt.dto.response.ApiResponse;
+import org.sopt.dto.response.CreatePostResponse;
+import org.sopt.dto.response.PostResponse;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        PostService postService = new PostService();
+        // 클라이언트는 Controller만 알면 돼요. Service도 Repository도 몰라도 돼요.
+        PostController postController = new PostController();
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -31,17 +36,37 @@ public class Main {
                     String content = scanner.nextLine();
                     System.out.print("작성자: ");
                     String author = scanner.nextLine();
-                    CreatePostRequest request = new CreatePostRequest(title, content, author);
-                    postService.createPost(request);
+                    ApiResponse<CreatePostResponse> createResponse = postController.createPost(
+                            new CreatePostRequest(title, content, author)
+                    );
+                    if (createResponse.isSuccess()) {
+                        System.out.println("✅ " + createResponse.getMessage());
+                    } else {
+                        System.out.println("🚫 " + createResponse.getMessage());
+                    }
                     break;
+
                 case 2:
-                    postService.readAllPosts();
+                    ApiResponse<List<PostResponse>> allResponse = postController.getAllPosts();
+                    List<PostResponse> posts = allResponse.getData();
+                    if (posts.isEmpty()) {
+                        System.out.println("등록된 게시글이 없습니다.");
+                    } else {
+                        posts.forEach(p -> System.out.println(p + "\n---"));
+                    }
                     break;
+
                 case 3:
                     System.out.print("조회할 게시글 ID: ");
-                    postService.readPost(scanner.nextLong());
+                    ApiResponse<PostResponse> getResponse = postController.getPost(scanner.nextLong());
                     scanner.nextLine();
+                    if (getResponse.isSuccess()) {
+                        System.out.println(getResponse.getData());
+                    } else {
+                        System.out.println(getResponse.getMessage());
+                    }
                     break;
+
                 case 4:
                     System.out.print("수정할 게시글 ID: ");
                     Long updateId = scanner.nextLong();
@@ -50,13 +75,25 @@ public class Main {
                     String newTitle = scanner.nextLine();
                     System.out.print("새 내용: ");
                     String newContent = scanner.nextLine();
-                    postService.updatePost(updateId, newTitle, newContent);
+                    ApiResponse<Void> updateResponse = postController.updatePost(updateId, newTitle, newContent);
+                    if (updateResponse.isSuccess()) {
+                        System.out.println("✅ " + updateResponse.getMessage());
+                    } else {
+                        System.out.println("🚫 " + updateResponse.getMessage());
+                    }
                     break;
+
                 case 5:
                     System.out.print("삭제할 게시글 ID: ");
-                    postService.deletePost(scanner.nextLong());
+                    ApiResponse<Void> deleteResponse = postController.deletePost(scanner.nextLong());
                     scanner.nextLine();
+                    if (deleteResponse.isSuccess()) {
+                        System.out.println("✅ " + deleteResponse.getMessage());
+                    } else {
+                        System.out.println("🚫 " + deleteResponse.getMessage());
+                    }
                     break;
+
                 case 0:
                     running = false;
                     System.out.println("👋 프로그램 종료");
