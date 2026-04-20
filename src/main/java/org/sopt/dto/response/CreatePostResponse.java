@@ -1,19 +1,5 @@
 package org.sopt.dto.response;
 
-public class CreatePostResponse {
-    private Long id;
-    private String message;
+public record CreatePostResponse(Long id, String message) {
 
-    public CreatePostResponse(Long id, String message) {
-        this.id = id;
-        this.message = message;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }
