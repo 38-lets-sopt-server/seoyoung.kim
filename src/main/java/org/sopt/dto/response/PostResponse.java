@@ -9,8 +9,13 @@ public record PostResponse(
         String author,
         String createdAt
 ) {
-    @Override
-    public String toString() {
-        return "[" + id + "] " + title + " - " + author + " (" + createdAt + ")\n" + content;
+    public static PostResponse from(Post post) {
+        return new PostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getAuthor(),
+                post.getCreatedAt()
+        );
     }
 }
