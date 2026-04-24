@@ -28,14 +28,14 @@ public class PostController {
             @RequestBody CreatePostRequest request
     ) {
         CreatePostResponse response = postService.createPost(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response, "게시글 등록 성공"));
     }
 
     // GET /posts 📝 과제
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPosts() {
         List<PostResponse> responses = postService.getAllPosts();
-        return ResponseEntity.ok(ApiResponse.success(responses));
+        return ResponseEntity.ok(ApiResponse.success(responses, "게시글 목록 조회 성공"));
 
     }
 
@@ -45,7 +45,7 @@ public class PostController {
             @PathVariable Long id
     ) {
         PostResponse response = postService.getPost(id);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(response, "게시글 조회 성공"));
     }
 
     // PUT /posts/{id} 📝 과제
@@ -55,7 +55,7 @@ public class PostController {
             @RequestBody UpdatePostRequest request
     ) {
         postService.updatePost(id, request.title(), request.content());
-        return ResponseEntity.ok(ApiResponse.success(null));
+        return ResponseEntity.ok(ApiResponse.success(null, "게시글 수정 성공"));
     }
 
     // DELETE /posts/{id} 📝 과제
@@ -64,6 +64,6 @@ public class PostController {
             @PathVariable Long id
     ) {
         postService.deletePost(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "게시글 삭제 성공"));
     }
 }

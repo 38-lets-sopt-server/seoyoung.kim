@@ -15,9 +15,10 @@ public class ApiResponse<T> {
 
     public T getData() { return data; }
 
-    public static <T> ApiResponse<T> success(T data) {
+    public static <T> ApiResponse<T> success(T data, String message) {
         ApiResponse<T> response = new ApiResponse<>();
         response.success = true;
+        response.message=message;
         response.data = data;
         return response;
     }
