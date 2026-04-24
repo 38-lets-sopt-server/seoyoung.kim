@@ -41,14 +41,14 @@ public class PostService {
     // READ - 단건 📝 과제
     public PostResponse getPost(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(()-> new PostNotFoundException(id));
+                .orElseThrow(()-> new PostNotFoundException());
         return PostResponse.from(post);
     }
 
     // UPDATE 📝 과제
     public void updatePost(Long id, String newTitle, String newContent) {
         Post post = postRepository.findById(id)
-                .orElseThrow(()-> new PostNotFoundException(id));
+                .orElseThrow(()-> new PostNotFoundException());
 
         PostValidator.validateTitle(newTitle);
         post.update(newTitle, newContent);
@@ -57,7 +57,7 @@ public class PostService {
     // DELETE 📝 과제
     public void deletePost(Long id) {
        Post post = postRepository.findById(id)
-               .orElseThrow(()-> new PostNotFoundException(id));
+               .orElseThrow(()-> new PostNotFoundException());
        postRepository.delete(post);
     }
 }
