@@ -2,6 +2,7 @@ package org.sopt.controller;
 
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
+import org.sopt.dto.response.ApiResponse;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.service.PostService;
@@ -23,43 +24,43 @@ public class PostController {
 
     // POST /posts ✅ 같이 구현
     @PostMapping
-    public ResponseEntity<CreatePostResponse> createPost(
+    public ResponseEntity<ApiResponse<CreatePostResponse>> createPost(
             @RequestBody CreatePostRequest request
     ) {
         CreatePostResponse response = postService.createPost(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }
 
     // GET /posts 📝 과제
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPosts() {
         List<PostResponse> responses = postService.getAllPosts();
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(ApiResponse.success(responses));
 
     }
 
     // GET /posts/{id} 📝 과제
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> getPost(
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(
             @PathVariable Long id
     ) {
         PostResponse response = postService.getPost(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     // PUT /posts/{id} 📝 과제
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePost(
+    public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable Long id,
             @RequestBody UpdatePostRequest request
     ) {
         postService.updatePost(id, request.title(), request.content());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     // DELETE /posts/{id} 📝 과제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(
+    public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable Long id
     ) {
         postService.deletePost(id);
