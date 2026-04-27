@@ -1,62 +1,69 @@
 package org.sopt.controller;
 
 import org.sopt.dto.request.CreatePostRequest;
+import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.ApiResponse;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
-import org.sopt.exception.PostNotFoundException;
 import org.sopt.service.PostService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/posts")
 public class PostController {
-    private final PostService postService = new PostService();
 
-    // POST /posts
-    public ApiResponse<CreatePostResponse> createPost(CreatePostRequest request) {
-        try {
-            CreatePostResponse data = postService.createPost(request);
-            return ApiResponse.success(data, "게시글 등록 완료");
-        } catch (IllegalArgumentException e) {
-            return ApiResponse.error(e.getMessage());
-        }
+    private final PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
+
+    // POST /posts ✅ 같이 구현
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreatePostResponse>> createPost(
+            @RequestBody CreatePostRequest request
+    ) {
+        CreatePostResponse response = postService.createPost(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response, "게시글 등록 성공"));
     }
 
     // GET /posts 📝 과제
-    public ApiResponse<List<PostResponse>> getAllPosts() {
-        List<PostResponse> data = postService.getAllPosts();
-        return ApiResponse.success(data, "게시글 목록 조회 성공");
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPosts() {
+        List<PostResponse> responses = postService.getAllPosts();
+        return ResponseEntity.ok(ApiResponse.success(responses, "게시글 목록 조회 성공"));
+
     }
 
     // GET /posts/{id} 📝 과제
-    public ApiResponse<PostResponse> getPost(Long id) {
-        try {
-            PostResponse data = postService.getPost(id);
-            return ApiResponse.success(data, "게시글 조회 성공");
-        } catch (PostNotFoundException e) {
-            return ApiResponse.error(e.getMessage());
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(
+            @PathVariable Long id
+    ) {
+        PostResponse response = postService.getPost(id);
+        return ResponseEntity.ok(ApiResponse.success(response, "게시글 조회 성공"));
     }
 
     // PUT /posts/{id} 📝 과제
-    public ApiResponse<Void> updatePost(Long id, String newTitle, String newContent) {
-        try {
-            postService.updatePost(id, newTitle, newContent);
-            return ApiResponse.success(null, "게시글 수정 완료");
-        } catch (PostNotFoundException | IllegalArgumentException e) {
-            return ApiResponse.error(e.getMessage());
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> updatePost(
+            @PathVariable Long id,
+            @RequestBody UpdatePostRequest request
+    ) {
+        postService.updatePost(id, request.title(), request.content());
+        return ResponseEntity.ok(ApiResponse.success(null, "게시글 수정 성공"));
     }
-
 
     // DELETE /posts/{id} 📝 과제
-    public ApiResponse<Void> deletePost(Long id) {
-        try {
-            postService.deletePost(id);
-            return ApiResponse.success(null, "게시글 삭제 완료");
-        } catch (PostNotFoundException e) {
-            return ApiResponse.error(e.getMessage());
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deletePost(
+            @PathVariable Long id
+    ) {
+        postService.deletePost(id);
+        return ResponseEntity.ok(ApiResponse.success(null, "게시글 삭제 성공"));
     }
 }
-
