@@ -1,6 +1,6 @@
 package org.sopt.exception;
 
-import org.sopt.dto.response.ApiResponse;
+import org.sopt.dto.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -14,11 +14,11 @@ public class GlobalExceptionHandler {
 
     // BusinessException
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBusinessException (
+    public ResponseEntity<BaseResponse<Void>> handleBusinessException (
             BusinessException e
     ) {
         ErrorCode errorCode = e.getErrorCode();
-        ApiResponse<Void> errorResponse = ApiResponse.error(
+        BaseResponse<Void> errorResponse = BaseResponse.error(
                 errorCode.getCode(),
                 e.getMessage()
         );
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     // @Valid 검증 실패 (400)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(
+    public ResponseEntity<BaseResponse<Void>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e
     ) {
         String errorMessage = e.getBindingResult()
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
                 .orElse("잘못된 입력입니다.");
 
         ErrorCode errorCode = ErrorCode.INVALID_INPUT;
-        ApiResponse<Void> errorResponse = ApiResponse.error(
+        BaseResponse<Void> errorResponse = BaseResponse.error(
                 errorCode.getCode(),
                 errorMessage
         );
@@ -51,11 +51,11 @@ public class GlobalExceptionHandler {
 
     // JSON 파싱 오류 (400)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadableException(
+    public ResponseEntity<BaseResponse<Void>> handleHttpMessageNotReadableException(
             HttpMessageNotReadableException e
     ) {
         ErrorCode errorCode = ErrorCode.INVALID_REQUEST_BODY;
-        ApiResponse<Void> errorResponse = ApiResponse.error(
+        BaseResponse<Void> errorResponse = BaseResponse.error(
                 errorCode.getCode(),
                 errorCode.getMessage()
         );
@@ -66,11 +66,11 @@ public class GlobalExceptionHandler {
 
     // 타입 불일치 (400)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatchException(
+    public ResponseEntity<BaseResponse<Void>> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException e
     ) {
         ErrorCode errorCode = ErrorCode.INVALID_TYPE_VALUE;
-        ApiResponse<Void> errorResponse = ApiResponse.error(
+        BaseResponse<Void> errorResponse = BaseResponse.error(
                 errorCode.getCode(),
                 errorCode.getMessage()
         );
@@ -81,11 +81,11 @@ public class GlobalExceptionHandler {
 
     // 그 외 예외 처리 (500)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(
+    public ResponseEntity<BaseResponse<Void>> handleException(
             Exception e
     ) {
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
-        ApiResponse<Void> errorResponse = ApiResponse.error(
+        BaseResponse<Void> errorResponse = BaseResponse.error(
                 errorCode.getCode(),
                 errorCode.getMessage()
         );

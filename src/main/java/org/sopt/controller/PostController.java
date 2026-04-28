@@ -3,7 +3,7 @@ package org.sopt.controller;
 import jakarta.validation.Valid;
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
-import org.sopt.dto.response.ApiResponse;
+import org.sopt.dto.response.BaseResponse;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.service.PostService;
@@ -25,46 +25,46 @@ public class PostController {
 
     // POST /posts
     @PostMapping
-    public ResponseEntity<ApiResponse<CreatePostResponse>> createPost(
+    public ResponseEntity<BaseResponse<CreatePostResponse>> createPost(
            @Valid @RequestBody CreatePostRequest request
     ) {
         CreatePostResponse response = postService.createPost(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response, "게시글 등록 성공"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(response, "게시글 등록 성공"));
     }
 
     // GET /posts 📝 과제
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPosts() {
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPosts() {
         List<PostResponse> responses = postService.getAllPosts();
-        return ResponseEntity.ok(ApiResponse.success(responses, "게시글 목록 조회 성공"));
+        return ResponseEntity.ok(BaseResponse.success(responses, "게시글 목록 조회 성공"));
 
     }
 
     // GET /posts/{id} 📝 과제
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostResponse>> getPost(
+    public ResponseEntity<BaseResponse<PostResponse>> getPost(
             @PathVariable Long id
     ) {
         PostResponse response = postService.getPost(id);
-        return ResponseEntity.ok(ApiResponse.success(response, "게시글 조회 성공"));
+        return ResponseEntity.ok(BaseResponse.success(response, "게시글 조회 성공"));
     }
 
     // PUT /posts/{id} 📝 과제
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> updatePost(
+    public ResponseEntity<BaseResponse<Void>> updatePost(
             @PathVariable Long id,
             @Valid @RequestBody UpdatePostRequest request
     ) {
         postService.updatePost(id, request.title(), request.content());
-        return ResponseEntity.ok(ApiResponse.success(null, "게시글 수정 성공"));
+        return ResponseEntity.ok(BaseResponse.success(null, "게시글 수정 성공"));
     }
 
     // DELETE /posts/{id} 📝 과제
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(
+    public ResponseEntity<BaseResponse<Void>> deletePost(
             @PathVariable Long id
     ) {
         postService.deletePost(id);
-        return ResponseEntity.ok(ApiResponse.success(null, "게시글 삭제 성공"));
+        return ResponseEntity.ok(BaseResponse.success(null, "게시글 삭제 성공"));
     }
 }
