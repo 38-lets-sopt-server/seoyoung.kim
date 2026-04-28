@@ -3,6 +3,8 @@ package org.sopt.exception;
 import org.sopt.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -19,6 +21,28 @@ public class GlobalExceptionHandler {
         ApiResponse<Void> errorResponse = ApiResponse.error(
                 errorCode.getCode(),
                 e.getMessage()
+        );
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(errorResponse);
+    }
+
+    // @Valid 검증 실패 (400)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e
+    ) {
+        String errorMessage = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(FieldError::getDefaultMessage)
+                .orElse("잘못된 입력입니다.");
+
+        ErrorCode errorCode = ErrorCode.INVALID_INPUT;
+        ApiResponse<Void> errorResponse = ApiResponse.error(
+                errorCode.getCode(),
+                errorMessage
         );
         return ResponseEntity
                 .status(errorCode.getHttpStatus())

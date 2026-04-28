@@ -1,5 +1,6 @@
 package org.sopt.controller;
 
+import jakarta.validation.Valid;
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.ApiResponse;
@@ -22,10 +23,10 @@ public class PostController {
         this.postService = postService;
     }
 
-    // POST /posts ✅ 같이 구현
+    // POST /posts
     @PostMapping
     public ResponseEntity<ApiResponse<CreatePostResponse>> createPost(
-            @RequestBody CreatePostRequest request
+           @Valid @RequestBody CreatePostRequest request
     ) {
         CreatePostResponse response = postService.createPost(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response, "게시글 등록 성공"));
@@ -52,7 +53,7 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable Long id,
-            @RequestBody UpdatePostRequest request
+            @Valid @RequestBody UpdatePostRequest request
     ) {
         postService.updatePost(id, request.title(), request.content());
         return ResponseEntity.ok(ApiResponse.success(null, "게시글 수정 성공"));
