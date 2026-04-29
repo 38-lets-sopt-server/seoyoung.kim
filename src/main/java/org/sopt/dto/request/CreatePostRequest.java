@@ -1,6 +1,7 @@
 package org.sopt.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CreatePostRequest(
@@ -8,5 +9,6 @@ public record CreatePostRequest(
         @Size(max = 50, message = "제목은 최대 50자 이내여야 합니다")
         String title,
         String content,
+        @NotNull(message = "userId는 필수입니다.")
         Long userId) {
-}
+        }
