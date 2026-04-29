@@ -67,6 +67,6 @@ public class PostService {
     public void deletePost(Long id) {
        Post post = postRepository.findById(id)
                .orElseThrow(PostNotFoundException::new);
-       post.delete();
+       postRepository.delete(post);
     }
 }

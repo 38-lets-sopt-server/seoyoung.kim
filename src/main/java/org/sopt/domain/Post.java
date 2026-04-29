@@ -2,13 +2,13 @@ package org.sopt.domain;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 import org.sopt.domain.common.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
 @SQLDelete(sql = "UPDATE post SET deleted_at = NOW() WHERE id = ?")
-@Where(clause = "deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 @Entity
 public class Post extends BaseTimeEntity {
     @Id
@@ -47,7 +47,6 @@ public class Post extends BaseTimeEntity {
         return user;
     }
 
-    //snake case
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
