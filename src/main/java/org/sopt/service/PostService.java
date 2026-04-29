@@ -1,37 +1,44 @@
 package org.sopt.service;
+import org.springframework.transaction.annotation.Transactional;
 import org.sopt.domain.Post;
+import org.sopt.domain.User;
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.exception.PostNotFoundException;
+import org.sopt.exception.UserNotFoundException;
 import org.sopt.repository.PostRepository;
-import org.sopt.validator.PostValidator;
+import org.sopt.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostService(PostRepository postRepository){
+    public PostService(PostRepository postRepository, UserRepository userRepository){
         this.postRepository=postRepository;
+        this.userRepository=userRepository;
     }
 
     // CREATE
+    @Transactional
     public CreatePostResponse createPost(CreatePostRequest request) {
-        PostValidator.validateTitle(request.title());
-        String createdAt = java.time.LocalDateTime.now().toString();
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(UserNotFoundException::new);
+
         Post post = new Post(
-                postRepository.generateId(),
+
                 request.title(),
                 request.content(),
-                request.author(),
-                createdAt);
+                user);
         postRepository.save(post);
         return new CreatePostResponse(post.getId());
     }
 
     // READ - 전체 📝 과제
+    @Transactional(readOnly=true)
     public List<PostResponse> getAllPosts() {
       return postRepository.findAll().stream()
               .map(PostResponse::from)
@@ -39,25 +46,27 @@ public class PostService {
     }
 
     // READ - 단건 📝 과제
+    @Transactional(readOnly=true)
     public PostResponse getPost(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(()-> new PostNotFoundException());
+                .orElseThrow(PostNotFoundException::new);
         return PostResponse.from(post);
     }
 
     // UPDATE 📝 과제
+    @Transactional
     public void updatePost(Long id, String newTitle, String newContent) {
         Post post = postRepository.findById(id)
-                .orElseThrow(()-> new PostNotFoundException());
+                .orElseThrow(PostNotFoundException::new);
 
-        PostValidator.validateTitle(newTitle);
         post.update(newTitle, newContent);
     }
 
     // DELETE 📝 과제
+    @Transactional
     public void deletePost(Long id) {
        Post post = postRepository.findById(id)
-               .orElseThrow(()-> new PostNotFoundException());
+               .orElseThrow(PostNotFoundException::new);
        postRepository.delete(post);
     }
 }

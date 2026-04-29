@@ -1,14 +1,7 @@
 package org.sopt.exception;
 
-public class PostNotFoundException extends RuntimeException{
-    private final ErrorCode errorCode;
-
+public class PostNotFoundException extends BusinessException{
     public PostNotFoundException() {
-        super(ErrorCode.POST_NOT_FOUND.getMessage());
-        this.errorCode=ErrorCode.POST_NOT_FOUND;
-    }
-
-    public ErrorCode getErrorCode(){
-        return errorCode;
+        super(ErrorCode.POST_NOT_FOUND);
     }
 }
