@@ -9,17 +9,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nickname;
-    private String emaill;
+    private String email;
 
     protected User(){}
 
-    public User(String nickname, String emaill) {
+    public User(String nickname, String email) {
         this.nickname = nickname;
-        this.emaill = emaill;
+        this.email = email;
     }
 
-    public String getEmaill() {
-        return emaill;
+    public String getEmail() {
+        return email;
     }
 
     public String getNickname() {

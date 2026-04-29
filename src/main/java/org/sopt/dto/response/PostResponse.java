@@ -6,7 +6,7 @@ public record PostResponse(
         Long id,
         String title,
         String content,
-        String author,
+        Long userId,
         String createdAt
 ) {
     public static PostResponse from(Post post) {
@@ -14,8 +14,8 @@ public record PostResponse(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
-                post.getAuthor(),
-                post.getCreatedAt()
+                post.getUser().getId(),
+                post.getCreatedAt().toString()
         );
     }
 }
