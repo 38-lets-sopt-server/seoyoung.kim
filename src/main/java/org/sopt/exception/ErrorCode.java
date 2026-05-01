@@ -16,7 +16,7 @@ public enum ErrorCode {
 
 
 
-    // 유저 관련 에러
+    // 유저 관련 에러 (USER_xxx)
     USER_NOT_FOUND("USER_001", "유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String code;

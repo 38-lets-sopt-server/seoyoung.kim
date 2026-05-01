@@ -37,7 +37,7 @@ public class PostService {
         return new CreatePostResponse(post.getId());
     }
 
-    // READ - 전체 📝 과제
+    // READ
     @Transactional(readOnly=true)
     public List<PostResponse> getAllPosts() {
       return postRepository.findAll().stream()
@@ -45,7 +45,7 @@ public class PostService {
               .toList();
     }
 
-    // READ - 단건 📝 과제
+    // READ - 단건
     @Transactional(readOnly=true)
     public PostResponse getPost(Long id) {
         Post post = postRepository.findById(id)
@@ -53,7 +53,7 @@ public class PostService {
         return PostResponse.from(post);
     }
 
-    // UPDATE 📝 과제
+    // UPDATE
     @Transactional
     public void updatePost(Long id, String newTitle, String newContent) {
         Post post = postRepository.findById(id)
@@ -62,7 +62,7 @@ public class PostService {
         post.update(newTitle, newContent);
     }
 
-    // DELETE 📝 과제
+    // DELETE
     @Transactional
     public void deletePost(Long id) {
        Post post = postRepository.findById(id)
