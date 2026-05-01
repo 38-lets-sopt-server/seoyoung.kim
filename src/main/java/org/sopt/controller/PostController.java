@@ -85,7 +85,7 @@ public class PostController {
             @Valid @RequestBody UpdatePostRequest request
     ) {
         postService.updatePost(id, request.title(), request.content());
-        return ResponseEntity.ok(BaseResponse.success(null, "게시글 수정 성공"));
+        return ResponseEntity.ok(BaseResponse.success("게시글 수정 성공"));
     }
 
     // DELETE /posts/{id}
@@ -101,6 +101,6 @@ public class PostController {
             @PathVariable Long id
     ) {
         postService.deletePost(id);
-        return ResponseEntity.ok(BaseResponse.success(null, "게시글 삭제 성공"));
+        return ResponseEntity.ok(BaseResponse.success("게시글 삭제 성공"));
     }
 }

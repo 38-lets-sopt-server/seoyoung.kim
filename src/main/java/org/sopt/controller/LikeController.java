@@ -37,7 +37,7 @@ public class LikeController {
             @Valid @RequestBody LikeRequest request
     ) {
         likeService.addLike(postId, request.userId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(null, "좋아요 추가 성공"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success("좋아요 추가 성공"));
     }
 
     @Operation(summary = "좋아요 취소", description = "게시글에 누른 좋아요를 취소합니다.")
@@ -52,6 +52,6 @@ public class LikeController {
             @Valid @RequestBody LikeRequest request
     ) {
         likeService.cancelLike(postId, request.userId());
-        return ResponseEntity.ok(BaseResponse.success(null, "좋아요 취소 성공"));
+        return ResponseEntity.ok(BaseResponse.success("좋아요 취소 성공"));
     }
 }
