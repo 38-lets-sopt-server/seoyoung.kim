@@ -5,10 +5,10 @@ import org.sopt.domain.User;
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
-import org.sopt.exception.PostNotFoundException;
-import org.sopt.exception.UserNotFoundException;
 import org.sopt.repository.PostRepository;
 import org.sopt.repository.UserRepository;
+import org.sopt.exception.BusinessException;
+import org.sopt.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class PostService {
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest request) {
         User user = userRepository.findById(request.userId())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Post post = new Post(
 
@@ -49,7 +49,7 @@ public class PostService {
     @Transactional(readOnly=true)
     public PostResponse getPost(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFoundException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
         return PostResponse.from(post);
     }
 
@@ -57,7 +57,7 @@ public class PostService {
     @Transactional
     public void updatePost(Long id, String newTitle, String newContent) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFoundException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
 
         post.update(newTitle, newContent);
     }
@@ -66,7 +66,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long id) {
        Post post = postRepository.findById(id)
-               .orElseThrow(PostNotFoundException::new);
+               .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
        postRepository.delete(post);
     }
 }
