@@ -14,10 +14,12 @@ public enum ErrorCode {
     INVALID_REQUEST_BODY("COMMON_003", "요청 본문을 읽을 수 없습니다.", HttpStatus.BAD_REQUEST),
     INVALID_TYPE_VALUE("COMMON_004", "잘못된 타입의 값입니다.", HttpStatus.BAD_REQUEST),
 
-
-
     // 유저 관련 에러 (USER_xxx)
-    USER_NOT_FOUND("USER_001", "유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+    USER_NOT_FOUND("USER_001", "유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
+    // 좋아요 관련 에러 (LIKE_xxx)
+    LIKE_ALREADY_EXISTS("LIKE_001", "이미 좋아요를 눌렀습니다.", HttpStatus.CONFLICT),
+    LIKE_NOT_FOUND("LIKE_002", "좋아요를 누르지 않은 게시글입니다.", HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;
