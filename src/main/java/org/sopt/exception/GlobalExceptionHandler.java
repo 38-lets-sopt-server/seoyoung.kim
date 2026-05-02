@@ -1,20 +1,25 @@
 package org.sopt.exception;
 
-import org.sopt.dto.response.ApiResponse;
+import org.sopt.dto.response.BaseResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // PostNotFoundException
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handlePostNotFoundException (
-            PostNotFoundException e
+    // BusinessException
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<BaseResponse<Void>> handleBusinessException (
+            BusinessException e
     ) {
         ErrorCode errorCode = e.getErrorCode();
-        ApiResponse<Void> errorResponse = ApiResponse.error(
+        BaseResponse<Void> errorResponse = BaseResponse.error(
                 errorCode.getCode(),
                 e.getMessage()
         );
@@ -23,28 +28,76 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
     }
 
-    // IllegalArgumentException (유효성 검증 실패)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(
-            IllegalArgumentException e
+    // @Valid 검증 실패 (400)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e
     ) {
+        String errorMessage = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(FieldError::getDefaultMessage)
+                .orElse("잘못된 입력입니다.");
+
         ErrorCode errorCode = ErrorCode.INVALID_INPUT;
-        ApiResponse<Void> errorResponse = ApiResponse.error(
-            errorCode.getCode(),
-            e.getMessage()
+        BaseResponse<Void> errorResponse = BaseResponse.error(
+                errorCode.getCode(),
+                errorMessage
         );
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(errorResponse);
     }
 
-    // 그외 모든 예외 처리
+    // JSON 파싱 오류 (400)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<BaseResponse<Void>> handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException e
+    ) {
+        ErrorCode errorCode = ErrorCode.INVALID_REQUEST_BODY;
+        BaseResponse<Void> errorResponse = BaseResponse.error(
+                errorCode.getCode(),
+                errorCode.getMessage()
+        );
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(errorResponse);
+    }
+
+    // 타입 불일치 (400)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException e
+    ) {
+        ErrorCode errorCode = ErrorCode.INVALID_TYPE_VALUE;
+        BaseResponse<Void> errorResponse = BaseResponse.error(
+                errorCode.getCode(),
+                errorCode.getMessage()
+        );
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(errorResponse);
+    }
+
+    // DB 제약조건 위반 - 중복 좋아요 (409)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<BaseResponse<Void>> handleDataIntegrityViolationException(
+            DataIntegrityViolationException e
+    ) {
+        ErrorCode errorCode = ErrorCode.LIKE_ALREADY_EXISTS;
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.error(errorCode.getCode(), errorCode.getMessage()));
+    }
+
+    // 그 외 예외 처리 (500)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(
+    public ResponseEntity<BaseResponse<Void>> handleException(
             Exception e
-    ){
+    ) {
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
-        ApiResponse<Void> errorResponse = ApiResponse.error(
+        BaseResponse<Void> errorResponse = BaseResponse.error(
                 errorCode.getCode(),
                 errorCode.getMessage()
         );

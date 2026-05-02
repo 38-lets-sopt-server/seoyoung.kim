@@ -1,41 +1,17 @@
 package org.sopt.repository;
 
 import org.sopt.domain.Post;
+import org.sopt.dto.response.PostResponse;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public class PostRepository {
-    private final List<Post> postList = new ArrayList<>();
-    private Long nextId = 1L;
-
-    public Post save(Post post) {
-        postList.add(post);
-        return post;
-    }
-
-    public List<Post> findAll() {
-        return new ArrayList<>(postList);
-    }
-
-    public Optional<Post> findById(Long id) {
-        return postList.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst();
-    }
-
-    public boolean deleteById(Long id) {
-        return postList.removeIf(p -> p.getId().equals(id));
-    }
-
-    public void delete(Post post){
-        postList.remove(post);
-    }
-
-    public Long generateId() {
-        return nextId++;
-    }
+public interface PostRepository extends JpaRepository<Post, Long> {
+    @Query("SELECT new org.sopt.dto.response.PostResponse(p.id, p.title, p.content, p.user.id, p.createdAt, COUNT(l)) " +
+            "FROM Post p LEFT JOIN p.likes l " +
+            "GROUP BY p.id, p.title, p.content, p.user.id, p.createdAt")
+    List<PostResponse> findAllPostResponses();
 }

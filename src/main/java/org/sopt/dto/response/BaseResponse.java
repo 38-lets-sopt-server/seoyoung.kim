@@ -3,7 +3,7 @@ package org.sopt.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponse<T> {
+public class BaseResponse<T> {
     private boolean success;
     private String code;
     private String message;
@@ -15,16 +15,24 @@ public class ApiResponse<T> {
 
     public T getData() { return data; }
 
-    public static <T> ApiResponse<T> success(T data, String message) {
-        ApiResponse<T> response = new ApiResponse<>();
+    public static <T> BaseResponse<T> success(T data, String message) {
+        BaseResponse<T> response = new BaseResponse<>();
         response.success = true;
         response.message=message;
         response.data = data;
         return response;
     }
 
-    public static <T> ApiResponse<T> error(String code, String message){
-        ApiResponse<T> response = new ApiResponse<>();
+    public static BaseResponse<Void> success(String message) {
+        BaseResponse<Void> response = new BaseResponse<>();
+        response.success = true;
+        response.message = message;
+        return response;
+    }
+
+
+    public static <T> BaseResponse<T> error(String code, String message){
+        BaseResponse<T> response = new BaseResponse<>();
         response.success = false;
         response.message = message;
         response.code = code;
