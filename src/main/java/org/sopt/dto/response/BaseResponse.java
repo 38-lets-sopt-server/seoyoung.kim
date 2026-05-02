@@ -23,6 +23,14 @@ public class BaseResponse<T> {
         return response;
     }
 
+    public static BaseResponse<Void> success(String message) {
+        BaseResponse<Void> response = new BaseResponse<>();
+        response.success = true;
+        response.message = message;
+        return response;
+    }
+
+
     public static <T> BaseResponse<T> error(String code, String message){
         BaseResponse<T> response = new BaseResponse<>();
         response.success = false;
