@@ -16,6 +16,8 @@ public enum ErrorCode {
 
     // 유저 관련 에러 (USER_xxx)
     USER_NOT_FOUND("USER_001", "유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    USER_EMAIL_DUPLICATE("USER_002", "이미 사용 중인 이메일입니다.", HttpStatus.CONFLICT),
+    USER_INVALID_PASSWORD("USER_003", "비밀번호가 올바르지 않습니다.", HttpStatus.UNAUTHORIZED),
 
     // 좋아요 관련 에러 (LIKE_xxx)
     LIKE_ALREADY_EXISTS("LIKE_001", "이미 좋아요를 눌렀습니다.", HttpStatus.CONFLICT),
