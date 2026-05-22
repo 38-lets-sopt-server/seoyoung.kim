@@ -12,12 +12,12 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("SELECT new org.sopt.dto.response.PostResponse(p.id, p.title, p.content, p.user.id, p.createdAt, COUNT(l)) " +
+    @Query("SELECT new org.sopt.domain.post.dto.PostResponse(p.id, p.title, p.content, p.user.id, p.createdAt, COUNT(l)) " +
             "FROM Post p LEFT JOIN Like l ON l.post = p " +
             "GROUP BY p.id, p.title, p.content, p.user.id, p.createdAt")
     List<PostResponse> findAllPostResponses();
 
-    @Query("SELECT new org.sopt.dto.response.PostResponse(p.id, p.title, p.content, p.user.id, p.createdAt, COUNT(l)) " +
+    @Query("SELECT new org.sopt.domain.post.dto.PostResponse(p.id, p.title, p.content, p.user.id, p.createdAt, COUNT(l)) " +
             "FROM Post p LEFT JOIN Like l ON l.post = p " +
             "WHERE p.id = :id " +
             "GROUP BY p.id, p.title, p.content, p.user.id, p.createdAt")
