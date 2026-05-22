@@ -10,12 +10,14 @@ public class User {
     private Long id;
     private String nickname;
     private String email;
+    private String password;
 
     protected User(){}
 
-    public User(String nickname, String email) {
+    public User(String nickname, String email, String password) {
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
     }
 
     public String getEmail() {
@@ -28,5 +30,9 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
