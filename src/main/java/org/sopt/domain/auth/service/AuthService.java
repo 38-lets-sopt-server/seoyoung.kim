@@ -2,6 +2,7 @@ package org.sopt.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.sopt.domain.auth.entity.RefreshToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.sopt.domain.user.entity.User;
 import org.sopt.domain.auth.dto.TokenResponse;
 import org.sopt.domain.user.dto.UserResponse;
@@ -20,6 +21,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${security.jwt.refresh-token-expires-in-seconds:1209600}")
     private long refreshTokenExpiresInSeconds;
@@ -28,7 +30,7 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        if (!user.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BusinessException(ErrorCode.USER_INVALID_PASSWORD);
         }
 
