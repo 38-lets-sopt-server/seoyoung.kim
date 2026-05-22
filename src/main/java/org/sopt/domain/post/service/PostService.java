@@ -45,18 +45,27 @@ public class PostService {
 
     // UPDATE
     @Transactional
-    public void updatePost(Long id, String newTitle, String newContent) {
+    public void updatePost(Long id, String newTitle, String newContent, Long userId) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+
+        if (!post.isOwnedBy(userId)) {
+            throw new BusinessException(ErrorCode.POST_FORBIDDEN);
+        }
 
         post.update(newTitle, newContent);
     }
 
     // DELETE
     @Transactional
-    public void deletePost(Long id) {
-       Post post = postRepository.findById(id)
-               .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
-       postRepository.delete(post);
+    public void deletePost(Long id, Long userId) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+
+        if (!post.isOwnedBy(userId)) {
+            throw new BusinessException(ErrorCode.POST_FORBIDDEN);
+        }
+
+        postRepository.delete(post);
     }
 }

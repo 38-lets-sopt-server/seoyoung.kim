@@ -47,6 +47,10 @@ public class Post extends BaseTimeEntity {
         return user;
     }
 
+    public boolean isOwnedBy(Long userId) {
+        return this.user.getId().equals(userId);
+    }
+
     public void update(String title, String content) {
         this.title = title;
         this.content = content;

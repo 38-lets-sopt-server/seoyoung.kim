@@ -1,5 +1,7 @@
 package org.sopt.global.exception;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.sopt.global.dto.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -77,6 +79,33 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(errorResponse);
+    }
+
+    // JWT 만료 (401)
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<BaseResponse<Void>> handleTokenExpiredException(TokenExpiredException e) {
+        ErrorCode errorCode = ErrorCode.AUTH_TOKEN_EXPIRED;
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.error(errorCode.getCode(), errorCode.getMessage()));
+    }
+
+    // JWT 변조/형식 오류 (401)
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<BaseResponse<Void>> handleJWTVerificationException(JWTVerificationException e) {
+        ErrorCode errorCode = ErrorCode.AUTH_TOKEN_INVALID;
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.error(errorCode.getCode(), errorCode.getMessage()));
+    }
+
+    // IllegalArgumentException (400)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<BaseResponse<Void>> handleIllegalArgumentException(IllegalArgumentException e) {
+        ErrorCode errorCode = ErrorCode.INVALID_INPUT;
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.error(errorCode.getCode(), e.getMessage()));
     }
 
     // 그 외 예외 처리 (500)

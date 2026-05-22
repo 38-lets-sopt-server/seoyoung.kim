@@ -83,9 +83,11 @@ public class PostController {
     public ResponseEntity<BaseResponse<Void>> updatePost(
             @Parameter(description = "게시글 ID", example = "1")
             @PathVariable Long id,
-            @Valid @RequestBody UpdatePostRequest request
+            @Valid @RequestBody UpdatePostRequest request,
+            Authentication authentication
     ) {
-        postService.updatePost(id, request.title(), request.content());
+        Long userId = Long.parseLong(authentication.getName());
+        postService.updatePost(id, request.title(), request.content(), userId);
         return ResponseEntity.ok(BaseResponse.success("게시글 수정 성공"));
     }
 
@@ -93,15 +95,17 @@ public class PostController {
     @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다.(soft delete)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "403", description = "삭제 권한 없음"),
             @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음")
     })
-
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> deletePost(
             @Parameter(description = "게시글 ID", example = "1")
-            @PathVariable Long id
+            @PathVariable Long id,
+            Authentication authentication
     ) {
-        postService.deletePost(id);
+        Long userId = Long.parseLong(authentication.getName());
+        postService.deletePost(id, userId);
         return ResponseEntity.ok(BaseResponse.success("게시글 삭제 성공"));
     }
 }
