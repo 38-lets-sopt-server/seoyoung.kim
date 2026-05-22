@@ -1,7 +1,8 @@
 package org.sopt.domain.post.service;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.sopt.domain.post.entity.Post;
-import org.sopt.domain.user.entiry.User;
+import org.sopt.domain.user.entity.User;
 import org.sopt.domain.post.dto.CreatePostRequest;
 import org.sopt.domain.post.dto.CreatePostResponse;
 import org.sopt.domain.post.dto.PostResponse;
@@ -13,14 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
-    public PostService(PostRepository postRepository, UserRepository userRepository){
-        this.postRepository=postRepository;
-        this.userRepository=userRepository;
-    }
 
     // CREATE
     @Transactional

@@ -3,7 +3,7 @@ package org.sopt.domain.post.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.sopt.domain.user.entiry.User;
+import org.sopt.domain.user.entity.User;
 import org.sopt.global.entity.BaseTimeEntity;
 
 import java.time.LocalDateTime;

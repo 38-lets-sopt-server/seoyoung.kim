@@ -1,7 +1,8 @@
 package org.sopt.domain.auth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sopt.domain.auth.entity.RefreshToken;
-import org.sopt.domain.user.entiry.User;
+import org.sopt.domain.user.entity.User;
 import org.sopt.domain.auth.dto.TokenResponse;
 import org.sopt.domain.user.dto.UserResponse;
 import org.sopt.global.exception.BusinessException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -21,12 +23,6 @@ public class AuthService {
 
     @Value("${security.jwt.refresh-token-expires-in-seconds:1209600}")
     private long refreshTokenExpiresInSeconds;
-
-    public AuthService(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository, JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.jwtService = jwtService;
-    }
 
     public UserResponse loginWithCredentials(String email, String password) {
         User user = userRepository.findByEmail(email)

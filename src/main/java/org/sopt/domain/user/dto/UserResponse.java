@@ -1,6 +1,6 @@
 package org.sopt.domain.user.dto;
 
-import org.sopt.domain.user.entiry.User;
+import org.sopt.domain.user.entity.User;
 
 public record UserResponse(
         Long id,

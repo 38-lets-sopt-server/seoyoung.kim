@@ -1,7 +1,7 @@
 package org.sopt.domain.post.entity;
 
 import jakarta.persistence.*;
-import org.sopt.domain.user.entiry.User;
+import org.sopt.domain.user.entity.User;
 import org.sopt.global.entity.BaseTimeEntity;
 
 @Entity

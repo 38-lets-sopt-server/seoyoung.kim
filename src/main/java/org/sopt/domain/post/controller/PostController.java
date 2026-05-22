@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.sopt.domain.post.dto.CreatePostRequest;
 import org.sopt.domain.post.dto.UpdatePostRequest;
 import org.sopt.global.dto.BaseResponse;
@@ -20,14 +21,11 @@ import java.util.List;
 
 @Tag(name = "Post", description = "게시글 관련 API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
 public class PostController {
 
     private final PostService postService;
-
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
 
     // POST /posts
     @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다.")

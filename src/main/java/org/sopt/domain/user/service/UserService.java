@@ -1,6 +1,7 @@
 package org.sopt.domain.user.service;
 
-import org.sopt.domain.user.entiry.User;
+import lombok.RequiredArgsConstructor;
+import org.sopt.domain.user.entity.User;
 import org.sopt.domain.user.dto.UserCreateRequest;
 import org.sopt.domain.user.dto.UserResponse;
 import org.sopt.global.exception.BusinessException;
@@ -10,13 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Transactional
     public UserResponse signUp(UserCreateRequest request) {

@@ -1,8 +1,9 @@
 package org.sopt.domain.post.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sopt.domain.post.entity.Like;
 import org.sopt.domain.post.entity.Post;
-import org.sopt.domain.user.entiry.User;
+import org.sopt.domain.user.entity.User;
 import org.sopt.global.exception.BusinessException;
 import org.sopt.global.exception.ErrorCode;
 import org.sopt.domain.post.repository.LikeRepository;
@@ -13,16 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-
-    public LikeService(LikeRepository likeRepository, UserRepository userRepository, PostRepository postRepository) {
-        this.likeRepository = likeRepository;
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-    }
 
     // 좋아요 추가
     @Transactional

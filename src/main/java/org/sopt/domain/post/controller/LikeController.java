@@ -1,6 +1,7 @@
 package org.sopt.domain.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,14 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Like", description = "좋아요 관련 API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/posts/{postId}/likes")
 public class LikeController {
 
     private final LikeService likeService;
-
-    public LikeController(LikeService likeService) {
-        this.likeService = likeService;
-    }
 
     @Operation(summary = "좋아요 추가", description = "게시글에 좋아요를 추가합니다.")
     @ApiResponses({
