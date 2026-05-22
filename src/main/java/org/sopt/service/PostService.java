@@ -1,5 +1,4 @@
 package org.sopt.service;
-import org.sopt.repository.LikeRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.sopt.domain.Post;
 import org.sopt.domain.User;
@@ -17,12 +16,10 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository){
+    public PostService(PostRepository postRepository, UserRepository userRepository){
         this.postRepository=postRepository;
         this.userRepository=userRepository;
-        this.likeRepository=likeRepository;
     }
 
     // CREATE
@@ -49,9 +46,8 @@ public class PostService {
     // READ - 단건
     @Transactional(readOnly=true)
     public PostResponse getPost(Long id) {
-        Post post = postRepository.findById(id)
+        return postRepository.findPostResponseById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
-        return PostResponse.from(post, likeRepository.countByPostId(id));
     }
 
     // UPDATE

@@ -9,7 +9,7 @@ public record PostResponse(
         String content,
         Long userId,
         String createdAt,
-        long likeCount
+        Long likeCount
 ) {
     // JPQL new 키워드용
     public PostResponse(Long id, String title, String content, Long userId, LocalDateTime createdAt, long likeCount) {

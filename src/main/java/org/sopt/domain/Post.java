@@ -6,8 +6,6 @@ import org.hibernate.annotations.SQLRestriction;
 import org.sopt.domain.common.BaseTimeEntity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @SQLDelete(sql = "UPDATE post SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
@@ -23,9 +21,6 @@ public class Post extends BaseTimeEntity {
     private User user;
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<Like> likes = new ArrayList<>();
-
     protected Post() {
     } //JPA 기본 생성자
 
@@ -54,9 +49,5 @@ public class Post extends BaseTimeEntity {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public void delete(){
-        this.deletedAt=LocalDateTime.now();
     }
 }
