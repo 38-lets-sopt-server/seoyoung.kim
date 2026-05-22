@@ -43,6 +43,10 @@ public class RefreshToken {
         );
     }
 
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(this.expiresAt);
+    }
+
     public void rotate(String newToken, long expiresInSeconds) {
         this.token = newToken;
         this.expiresAt = LocalDateTime.now().plusSeconds(expiresInSeconds);
