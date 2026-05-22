@@ -61,6 +61,24 @@ public class AuthService {
     }
 
     @Transactional
+    public TokenResponse reissue(String refreshToken) {
+        Long memberId = jwtService.verifyAndGetMemberId(refreshToken);
+
+        RefreshToken storedToken = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_REFRESH_TOKEN_NOT_FOUND));
+
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        String newAccessToken = jwtService.generateAccessToken(user.getId(), user.getEmail());
+        String newRefreshToken = jwtService.generateRefreshToken(user.getId());
+
+        storedToken.rotate(newRefreshToken, refreshTokenExpiresInSeconds);
+
+        return TokenResponse.of(newAccessToken, newRefreshToken);
+    }
+
+    @Transactional
     public void logout(Long userId, String accessToken) {
         refreshTokenRepository.deleteByMemberId(userId);
         Instant expiresAt = jwtService.getExpiresAt(accessToken);

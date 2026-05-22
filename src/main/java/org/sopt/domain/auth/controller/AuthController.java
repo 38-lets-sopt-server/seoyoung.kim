@@ -3,6 +3,7 @@ package org.sopt.domain.auth.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.sopt.domain.auth.dto.ReissueRequest;
 import org.sopt.domain.auth.dto.UserLoginRequest;
 import org.sopt.global.dto.BaseResponse;
 import org.sopt.domain.auth.dto.TokenResponse;
@@ -31,6 +32,19 @@ public class AuthController {
         return ResponseEntity.ok(BaseResponse.success(tokens, "로그인 성공"));
     }
 
+    @Operation(summary = "토큰 재발급", description = "Refresh Token으로 새로운 Access Token을 발급합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
+            @ApiResponse(responseCode = "401", description = "유효하지 않거나 만료된 Refresh Token")
+    })
+    @PostMapping("/reissue")
+    public ResponseEntity<BaseResponse<TokenResponse>> reissue(
+            @Valid @RequestBody ReissueRequest request
+    ) {
+        TokenResponse tokens = authService.reissue(request.refreshToken());
+        return ResponseEntity.ok(BaseResponse.success(tokens, "토큰 재발급 성공"));
+    }
+
     @Operation(summary = "로그아웃")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
@@ -50,9 +64,6 @@ public class AuthController {
     @Operation(summary = "내 정보 조회 (Access Token 검증)")
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<UserResponse>> me(Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null) {
-            throw new IllegalArgumentException("인증되지 않았습니다.");
-        }
         Long memberId = Long.parseLong(authentication.getName());
         UserResponse user = authService.getUserById(memberId);
         return ResponseEntity.ok(BaseResponse.success(user, "내 정보 조회 성공"));
