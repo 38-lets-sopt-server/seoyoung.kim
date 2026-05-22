@@ -56,4 +56,9 @@ public class JwtService {
             throw new IllegalArgumentException("JWT의 회원 정보가 올바르지 않습니다.");
         }
     }
+
+    public Instant getExpiresAt(String token) {
+        DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
+        return jwt.getExpiresAtAsInstant();
+    }
 }
