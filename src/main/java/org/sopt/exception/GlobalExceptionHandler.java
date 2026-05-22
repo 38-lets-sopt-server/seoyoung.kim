@@ -1,7 +1,6 @@
 package org.sopt.exception;
 
 import org.sopt.dto.response.BaseResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -78,17 +77,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(errorResponse);
-    }
-
-    // DB 제약조건 위반 - 중복 좋아요 (409)
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<BaseResponse<Void>> handleDataIntegrityViolationException(
-            DataIntegrityViolationException e
-    ) {
-        ErrorCode errorCode = ErrorCode.LIKE_ALREADY_EXISTS;
-        return ResponseEntity
-                .status(errorCode.getHttpStatus())
-                .body(BaseResponse.error(errorCode.getCode(), errorCode.getMessage()));
     }
 
     // 그 외 예외 처리 (500)

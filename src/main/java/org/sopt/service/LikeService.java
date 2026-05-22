@@ -8,6 +8,7 @@ import org.sopt.exception.ErrorCode;
 import org.sopt.repository.LikeRepository;
 import org.sopt.repository.PostRepository;
 import org.sopt.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,11 @@ public class LikeService {
             throw new BusinessException(ErrorCode.LIKE_ALREADY_EXISTS);
         }
 
-        likeRepository.save(new Like(user, post));
+        try {
+            likeRepository.save(new Like(user, post));
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException(ErrorCode.LIKE_ALREADY_EXISTS);
+        }
     }
 
     //좋아요 취소
