@@ -3,6 +3,8 @@ package org.sopt.domain.auth.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.sopt.global.exception.BusinessException;
+import org.sopt.global.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ public class JwtService {
         Instant now = Instant.now();
         return JWT.create()
                 .withSubject(String.valueOf(memberId))
+                .withClaim("type", "access")
                 .withClaim("email", email)
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(now.plusSeconds(accessTokenExpiresInSeconds)))
@@ -40,6 +43,7 @@ public class JwtService {
         Instant now = Instant.now();
         return JWT.create()
                 .withSubject(String.valueOf(memberId))
+                .withClaim("type", "refresh")
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(now.plusSeconds(refreshTokenExpiresInSeconds)))
                 .sign(algorithm);
@@ -47,13 +51,31 @@ public class JwtService {
 
     public Long verifyAndGetMemberId(String token) {
         if (token == null || token.isBlank()) {
-            throw new IllegalArgumentException("토큰이 없습니다.");
+            throw new BusinessException(ErrorCode.AUTH_TOKEN_INVALID);
         }
         DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
+        if (!"access".equals(jwt.getClaim("type").asString())) {
+            throw new BusinessException(ErrorCode.AUTH_TOKEN_INVALID);
+        }
         try {
             return Long.parseLong(jwt.getSubject());
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("JWT의 회원 정보가 올바르지 않습니다.");
+            throw new BusinessException(ErrorCode.AUTH_TOKEN_INVALID);
+        }
+    }
+
+    public Long verifyRefreshTokenAndGetMemberId(String token) {
+        if (token == null || token.isBlank()) {
+            throw new BusinessException(ErrorCode.AUTH_TOKEN_INVALID);
+        }
+        DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
+        if (!"refresh".equals(jwt.getClaim("type").asString())) {
+            throw new BusinessException(ErrorCode.AUTH_TOKEN_INVALID);
+        }
+        try {
+            return Long.parseLong(jwt.getSubject());
+        } catch (NumberFormatException e) {
+            throw new BusinessException(ErrorCode.AUTH_TOKEN_INVALID);
         }
     }
 
