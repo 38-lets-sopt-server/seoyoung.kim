@@ -1,21 +1,29 @@
 package org.sopt.domain.user.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nickname;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
 
     @Column(unique = true)
     private Long kakaoId;
-
-    protected User() {}
 
     public User(String nickname, String email, String password) {
         this.nickname = nickname;
@@ -30,10 +38,4 @@ public class User {
         user.email = email;
         return user;
     }
-
-    public Long getId() { return id; }
-    public String getNickname() { return nickname; }
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-    public Long getKakaoId() { return kakaoId; }
 }

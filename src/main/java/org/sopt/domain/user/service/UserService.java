@@ -2,6 +2,7 @@ package org.sopt.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.sopt.domain.user.entity.User;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.sopt.domain.user.dto.UserCreateRequest;
 import org.sopt.domain.user.dto.UserResponse;
@@ -25,7 +26,11 @@ public class UserService {
         }
         String encodedPassword = passwordEncoder.encode(request.password());
         User user = new User(request.nickname(), request.email(), encodedPassword);
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException(ErrorCode.USER_EMAIL_DUPLICATE);
+        }
         return UserResponse.from(user);
     }
 }

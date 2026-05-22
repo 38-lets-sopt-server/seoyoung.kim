@@ -77,6 +77,7 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
             @ApiResponse(responseCode = "400", description = "유효성 검증 실패"),
+            @ApiResponse(responseCode = "403", description = "수정 권한 없음"),
             @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음")
     })
     @PutMapping("/{id}")
