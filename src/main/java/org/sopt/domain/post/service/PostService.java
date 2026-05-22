@@ -21,15 +21,11 @@ public class PostService {
 
     // CREATE
     @Transactional
-    public CreatePostResponse createPost(CreatePostRequest request) {
-        User user = userRepository.findById(request.userId())
+    public CreatePostResponse createPost(CreatePostRequest request, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        Post post = new Post(
-
-                request.title(),
-                request.content(),
-                user);
+        Post post = new Post(request.title(), request.content(), user);
         postRepository.save(post);
         return new CreatePostResponse(post.getId());
     }

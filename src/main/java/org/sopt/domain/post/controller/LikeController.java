@@ -2,6 +2,7 @@ package org.sopt.domain.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,13 +27,13 @@ public class LikeController {
             @ApiResponse(responseCode = "404", description = "게시글 또는 유저를 찾을 수 없습니다."),
             @ApiResponse(responseCode = "409", description = "이미 좋아요를 누른 게시글입니다.")
     })
-    @PostMapping("/{userId}")
+    @PostMapping
     public ResponseEntity<BaseResponse<Void>> addLike(
             @Parameter(description = "게시글 ID", example = "1")
             @PathVariable Long postId,
-            @Parameter(description = "유저 ID", example = "1")
-            @PathVariable Long userId
+            Authentication authentication
     ) {
+        Long userId = Long.parseLong(authentication.getName());
         likeService.addLike(postId, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success("좋아요 추가 성공"));
     }
@@ -42,13 +43,13 @@ public class LikeController {
             @ApiResponse(responseCode = "200", description = "좋아요 취소 성공"),
             @ApiResponse(responseCode = "404", description = "좋아요를 누르지 않은 게시글입니다.")
     })
-    @DeleteMapping("/{userId}")
+    @DeleteMapping
     public ResponseEntity<BaseResponse<Void>> cancelLike(
             @Parameter(description = "게시글 ID", example = "1")
             @PathVariable Long postId,
-            @Parameter(description = "유저 ID", example = "1")
-            @PathVariable Long userId
+            Authentication authentication
     ) {
+        Long userId = Long.parseLong(authentication.getName());
         likeService.cancelLike(postId, userId);
         return ResponseEntity.ok(BaseResponse.success("좋아요 취소 성공"));
     }

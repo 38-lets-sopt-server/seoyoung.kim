@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.sopt.domain.post.dto.CreatePostRequest;
 import org.sopt.domain.post.dto.UpdatePostRequest;
 import org.sopt.global.dto.BaseResponse;
@@ -36,9 +37,11 @@ public class PostController {
     })
     @PostMapping
     public ResponseEntity<BaseResponse<CreatePostResponse>> createPost(
-           @Valid @RequestBody CreatePostRequest request
+            @Valid @RequestBody CreatePostRequest request,
+            Authentication authentication
     ) {
-        CreatePostResponse response = postService.createPost(request);
+        Long userId = Long.parseLong(authentication.getName());
+        CreatePostResponse response = postService.createPost(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(response, "게시글 등록 성공"));
     }
 

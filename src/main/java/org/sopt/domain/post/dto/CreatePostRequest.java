@@ -12,9 +12,6 @@ public record CreatePostRequest(
         String title,
 
         @Schema(description = "게시글 내용", example = "돈까스래")
-        String content,
-
-        @Schema(description = "작성자 ID", example = "1")
-        @NotNull(message = "userId는 필수입니다.")
-        Long userId) {
-        }
+        String content
+) {
+}
