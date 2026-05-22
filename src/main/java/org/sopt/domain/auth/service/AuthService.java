@@ -28,7 +28,7 @@ public class AuthService {
     @Value("${security.jwt.refresh-token-expires-in-seconds:1209600}")
     private long refreshTokenExpiresInSeconds;
 
-    public UserResponse loginWithCredentials(String email, String password) {
+    private UserResponse loginWithCredentials(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
@@ -54,6 +54,7 @@ public class AuthService {
         return TokenResponse.of(accessToken, refreshToken);
     }
 
+    @Transactional(readOnly = true)
     public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -62,10 +63,15 @@ public class AuthService {
 
     @Transactional
     public TokenResponse reissue(String refreshToken) {
-        Long memberId = jwtService.verifyAndGetMemberId(refreshToken);
+        Long memberId = jwtService.verifyRefreshTokenAndGetMemberId(refreshToken);
 
         RefreshToken storedToken = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_REFRESH_TOKEN_NOT_FOUND));
+
+        if (storedToken.isExpired()) {
+            refreshTokenRepository.delete(storedToken);
+            throw new BusinessException(ErrorCode.AUTH_TOKEN_EXPIRED);
+        }
 
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
