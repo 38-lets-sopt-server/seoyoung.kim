@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 public record UserCreateRequest(
         @Schema(description = "닉네임", example = "김서영")
         @NotBlank(message = "닉네임은 필수입니다.")
+        @Size(max = 20, message = "닉네임은 20자 이하여야 합니다.")
         String nickname,
 
         @Schema(description = "이메일", example = "seoyoung@sopt.org")
