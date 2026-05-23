@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.sopt.domain.auth.security.CustomOAuth2User;
 import org.sopt.domain.auth.dto.TokenResponse;
+import org.sopt.global.dto.BaseResponse;
 import org.sopt.domain.auth.entity.RefreshToken;
 import org.sopt.domain.auth.repository.RefreshTokenRepository;
 import org.sopt.domain.auth.service.JwtService;
@@ -45,6 +46,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), TokenResponse.of(accessToken, refreshToken));
+        objectMapper.writeValue(response.getWriter(),
+                BaseResponse.success(TokenResponse.of(accessToken, refreshToken), "로그인 성공"));
     }
 }
