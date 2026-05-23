@@ -56,6 +56,17 @@ public class SecurityConfig {
                                     )
                             );
                         })
+                        .accessDeniedHandler((request, response, e) -> {
+                            ErrorCode errorCode = ErrorCode.AUTH_FORBIDDEN;
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write(
+                                    objectMapper.writeValueAsString(
+                                            BaseResponse.error(errorCode.getCode(), errorCode.getMessage())
+                                    )
+                            );
+                        })
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
